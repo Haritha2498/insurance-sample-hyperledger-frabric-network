@@ -1,0 +1,99 @@
+Use Case: Insurance Claims Processing on Hyperledger Fabric
+
+Participants:
+
+    User (Policyholder): Submits a health insurance claim.
+    Insurance Company: Verifies and processes the claim.
+    Government Agency: Audits the claim process for compliance.
+
+Steps:
+
+    User Submits Claim:
+        The policyholder files a claim for a medical procedure via the blockchain.
+
+    Insurance Company Verifies:
+        Smart contracts automatically verify policy details, coverage, and medical records.
+        If needed, the company requests further validation from healthcare providers via the blockchain.
+
+    Government Agency Audits:
+        The agency monitors claim data for compliance and fraud prevention using read-only access.
+
+    Claim Decision:
+        If approved, the smart contract triggers the payout.
+        If rejected, the policyholder is notified, and the decision is logged.
+
+    Real-Time Updates:
+        The user tracks the claim status, and the government ensures the process follows regulations.
+
+Advantages:
+
+    Transparency: All parties see real-time updates.
+    Automation: Smart contracts handle claims processing.
+    Fraud Prevention: Immutable records prevent duplicate or false claims.
+    Efficiency: Faster, automated claim approvals
+    
+    
+    
+    
+    
+    
+  user  
+    
+export FABRIC_CFG_PATH=./peercfg
+export CHANNEL_NAME=mychannel
+export CORE_PEER_LOCALMSPID=userMSP
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/user.example.com/peers/peer0.user.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/user.example.com/users/Admin@user.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem 
+export USER_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/user.example.com/peers/peer0.user.example.com/tls/ca.crt
+export INCOMPANY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt
+export GOVAGENCY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt
+
+
+inCompany
+
+export FABRIC_CFG_PATH=./peercfg
+export CHANNEL_NAME=mychannel
+export CORE_PEER_LOCALMSPID=inCompanyMSP
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/inCompany.example.com/users/Admin@inCompany.example.com/msp
+export CORE_PEER_ADDRESS=localhost:9051
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem 
+export USER_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt
+export INCOMPANY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt
+export GOVAGENCY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt
+
+
+govAgency
+
+export FABRIC_CFG_PATH=./peercfg
+export CHANNEL_NAME=mychannel
+export CORE_PEER_LOCALMSPID=govAgencyMSP
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/govAgency.example.com/users/Admin@govAgency.example.com/msp
+export CORE_PEER_ADDRESS=localhost:11051
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem 
+export USER_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt
+export INCOMPANY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt
+export GOVAGENCY_PEER_TLSROOTCERT=${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt
+
+
+
+
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/user.example.com/peers/peer0.user.example.com/tls/ca.crt" --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/inCompany.example.com/peers/peer0.inCompany.example.com/tls/ca.crt" --peerAddresses localhost:11051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/govAgency.example.com/peers/peer0.govAgency.example.com/tls/ca.crt" -c '{"function":"InitLedger","Args":[]}'
+
+
+
+
+
+
+
+
+
+
+
+
